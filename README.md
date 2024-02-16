@@ -1,6 +1,6 @@
 # Search Popup Component
 
-[Install the package for npm here.](https://www.npmjs.com/package/@tryferos/Popups)
+[Install the package for npm here.](https://www.npmjs.com/package/@tryferos/popups)
 
 [Source code on Github.](https://github.com/Tryferos/Popups-Component)
 
