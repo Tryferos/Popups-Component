@@ -1,5 +1,6 @@
 import '../tailwind.css'
 import { PopupItem } from './PopupItem';
-import { PopupWrapper } from './PopupWrapper';
+import { PopupWrapper, usePopup } from './PopupWrapper';
+import PopupElement from './PopupElement';
 
-export { PopupItem, PopupWrapper };
+export { PopupItem, PopupWrapper, usePopup, PopupElement };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, createContext, ReactNode, FC, ComponentProps, useRef } from "react";
 import PopupElement from "./PopupElement";
 
-export type PopupType = (ComponentProps<typeof PopupWrapper>['popups']) extends Array<infer Item> ? Item : never;
+export type PopupType = (ComponentProps<typeof PopupElement>['popups']) extends Array<infer Item> ? Item : never;
 
 
 type handlePopupProps = {
@@ -13,29 +13,12 @@ type handlePopupProps = {
 const PopupContext = createContext({ popup: null, changePopup: ({ popup, title, data }: handlePopupProps) => { }, closePopup: () => { }, title: '', data: null }) as
     React.Context<{ popup: PopupType | null; changePopup: ({ popup, title, data }: handlePopupProps) => void, closePopup: () => void; title: string, data: unknown }>;
 
-export function PopupWrapper(props: { children: ReactNode, popups: Array<string> }) {
+export function PopupWrapper(props: { children: ReactNode }) {
     const { children } = props;
-    const ref = useRef<HTMLDivElement>(null)
-    const [popup, setPopup] = useState<PopupType | null>(null);
+    const [popup, setPopup] = useState<PopupType | null>('test1');
     const [popupData, setPopupData] = useState<unknown | null>(null);
     const [title, setTitle] = useState<string>('');
-    useEffect(() => {
-        if (popup == null) {
-            closePopup();
-            return;
-        }
-        if (!props.popups.some(item => (item.toLowerCase() == popup.toLowerCase()))) {
-            closePopup();
-        }
 
-    }, [popup, props.popups])
-
-    useEffect(() => {
-        if (!ref || !ref.current) return;
-        const parentElement = ref.current.parentElement;
-
-
-    }, [ref])
 
     const changePopup = ({ popup, title, data }: handlePopupProps) => {
         if (popup == null) {
@@ -54,9 +37,7 @@ export function PopupWrapper(props: { children: ReactNode, popups: Array<string>
 
     return (
         <PopupContext.Provider value={{ popup: popup, changePopup: changePopup, closePopup: closePopup, title: title, data: popupData }}>
-            <PopupElement ref={ref}>
-                {children}
-            </PopupElement>
+            {children}
         </PopupContext.Provider>
     )
 }
