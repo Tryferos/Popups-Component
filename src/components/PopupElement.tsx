@@ -3,18 +3,8 @@ import { usePopup } from "./PopupWrapper";
 import { AnimatePresence, motion } from 'framer-motion';
 import { CloseIcon } from "./svg";
 import { PopupItem } from "./PopupItem";
+import { PopupElementProps } from ".";
 
-type Animations = {
-    enabled?: boolean;
-    duration?: number;
-}
-
-type PopupElementProps = {
-    children: ReactNode;
-    popups: Array<string>;
-    darkMode?: boolean;
-    animations?: Animations
-}
 
 export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
     ((props, ref) => {
@@ -23,6 +13,7 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
 
         const { animations } = props.animations ? props : { animations: { enabled: true, duration: 0.2 } };
         const { darkMode } = props.darkMode ? props : { darkMode: false };
+        const animate = animations?.enabled as boolean;
 
         useEffect(() => {
             if (popup == null) {
@@ -53,7 +44,8 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
                 <AnimatePresence>
                     {
                         popup ? (
-                            <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }} exit={{ opacity: 0, scale: 0.6 }}
+                            <motion.div initial={{ opacity: animate ? 0 : 1, scale: animate ? 0.6 : 1 }} animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: animations?.duration }} exit={{ opacity: animate ? 0 : 1, scale: animate ? 0.6 : 1 }}
                                 ref={ref} className={`bg-white dark:bg-slate-800 shadow-[0px_0px_20px_4px_rgba(0,0,0,0.2)] w-[50%] min-w-[400px] font-sans 
                             rounded-md relative max-w-[850px] max-h-[70%] min-h-[200px] mt-[75px] z-[120]`}>
                                 <div className="w-full h-[10%]  border-b-gray-300 border-b-[1px] items-center flex justify-center px-6 relative">

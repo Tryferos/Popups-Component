@@ -15,7 +15,7 @@ const PopupContext = createContext({ popup: null, changePopup: ({ popup, title, 
 
 export function PopupWrapper(props: { children: ReactNode }) {
     const { children } = props;
-    const [popup, setPopup] = useState<PopupType | null>('test1');
+    const [popup, setPopup] = useState<PopupType | null>(null);
     const [popupData, setPopupData] = useState<unknown | null>(null);
     const [title, setTitle] = useState<string>('');
 
