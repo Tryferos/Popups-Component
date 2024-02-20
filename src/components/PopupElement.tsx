@@ -1,4 +1,4 @@
-import React, { ReactNode, forwardRef, useEffect, useRef } from "react";
+import React, { MouseEvent, ReactNode, forwardRef, useEffect, useRef } from "react";
 import { usePopup } from "./PopupWrapper";
 import { AnimatePresence, motion } from 'framer-motion';
 import { CloseIcon } from "./svg";
@@ -14,6 +14,7 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
         const { animations } = props.animations ? props : { animations: { enabled: true, duration: 0.2 } };
         const { darkMode } = props.darkMode ? props : { darkMode: false };
         const animate = animations?.enabled as boolean;
+        const closeOnClickOutside = props.closeOnClickOutside ?? true;
 
         useEffect(() => {
             if (popup == null) {
@@ -38,8 +39,17 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
 
         }, [darkMode, parentElement])
 
+        const handleClick = (ev: MouseEvent<HTMLDivElement>) => {
+            if (!closeOnClickOutside) return;
+            const target = ev.target as HTMLDivElement;
+            if (target === parentElement.current) {
+                closePopup();
+            }
+        }
+
         return (
             <div ref={parentElement}
+                onClick={handleClick}
                 className={`absolute top-0 left-0 w-[100vw] h-[100vh] ${popup == null ? 'pointer-events-none bg-none' : 'bg-opacity-20 bg-slate-900 dark:bg-slate-100'} z-[9999] flex justify-center`}>
                 <AnimatePresence>
                     {

@@ -14,6 +14,7 @@ export type PopupElementProps = {
     popups: Array<string>;
     darkMode?: boolean;
     animations?: Animations
+    closeOnClickOutside?: boolean;
 }
 
 export { PopupItem, PopupWrapper, usePopup, PopupElement };

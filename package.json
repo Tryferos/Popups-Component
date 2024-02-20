@@ -8,8 +8,8 @@
   "keywords": [
     "react",
     "popup",
-    "modal",
-    "tooltip"],
+    "modal"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Tryferos/Popups-Component"
