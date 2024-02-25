@@ -1,57 +1,21 @@
-import React, { MouseEvent, ReactNode, forwardRef, useEffect, useRef } from "react";
+import React, { FC, MouseEvent, ReactNode, forwardRef, useEffect, useRef } from "react";
 import { usePopup } from "./PopupWrapper";
 import { AnimatePresence, motion } from 'framer-motion';
 import { CloseIcon } from "./svg";
 import { PopupItem } from "./PopupItem";
 import { PopupElementProps } from ".";
-import { twMerge } from 'tailwind-merge';
 
 
 export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
     ((props, ref) => {
-        const parentElement = useRef<HTMLDivElement>(null);
         const { popup, changePopup, title, closePopup, data } = usePopup();
-
         const { animations } = props.animations ? props : { animations: { enabled: true, duration: 0.2 } };
         const { darkMode } = props.darkMode ? props : { darkMode: false };
         const animate = animations?.enabled as boolean;
         const closeOnClickOutside = props.closeOnClickOutside ?? true;
 
-        useEffect(() => {
-            if (popup == null) {
-                closePopup();
-                return;
-            }
-            if (!props.popups.some(item => (item.toLowerCase() == popup.toLowerCase()))) {
-                closePopup();
-            }
-
-        }, [popup, props.popups])
-
-        useEffect(() => {
-
-            if (!parentElement || !parentElement.current) return;
-
-            if (darkMode) {
-                parentElement.current.classList.add('dark');
-                return;
-            }
-            parentElement.current.classList.remove('dark');
-
-        }, [darkMode, parentElement])
-
-        const handleClick = (ev: MouseEvent<HTMLDivElement>) => {
-            if (!closeOnClickOutside) return;
-            const target = ev.target as HTMLDivElement;
-            if (target === parentElement.current) {
-                closePopup();
-            }
-        }
-
         return (
-            <div ref={parentElement}
-                onClick={handleClick}
-                className={`absolute top-0 left-0 w-[100vw] h-[100vh] ${popup == null ? 'pointer-events-none bg-none' : 'bg-opacity-20 bg-slate-900 dark:bg-slate-100'} z-[9999] flex justify-center`}>
+            <PopupElementWrapper darkMode={darkMode} closeOnClickOutside={closeOnClickOutside} popups={props.popups}>
                 <AnimatePresence>
                     {
                         popup ? (
@@ -78,8 +42,50 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
                         ) : null
                     }
                 </AnimatePresence>
-            </div>
+            </PopupElementWrapper>
         )
     });
+
+export const PopupElementWrapper: FC<Pick<PopupElementProps, 'darkMode' | 'closeOnClickOutside' | 'popups'> & { children: ReactNode }> = (props) => {
+    const { popup, closePopup } = usePopup();
+    const ref = useRef<HTMLDivElement>(null);
+    const { darkMode, closeOnClickOutside } = props;
+    useEffect(() => {
+        if (popup == null) {
+            closePopup();
+            return;
+        }
+        if (!props.popups.some(item => (item.toLowerCase() == popup.toLowerCase()))) {
+            closePopup();
+        }
+
+    }, [popup, props.popups])
+    useEffect(() => {
+
+        if (!ref || !ref.current) return;
+
+        if (darkMode) {
+            ref.current.classList.add('dark');
+            return;
+        }
+        ref.current.classList.remove('dark');
+
+    }, [darkMode, ref])
+
+    const handleClick = (ev: MouseEvent<HTMLDivElement>) => {
+        if (!closeOnClickOutside) return;
+        const target = ev.target as HTMLDivElement;
+        if (target === ref.current) {
+            closePopup();
+        }
+    }
+    return (
+        <div ref={ref}
+            onClick={handleClick}
+            className={`absolute top-0 left-0 w-[100vw] h-[100vh] ${popup == null ? 'pointer-events-none bg-none' : 'bg-opacity-20 bg-slate-900 dark:bg-slate-100'} z-[9999] flex justify-center`}>
+            {props.children}
+        </div>
+    )
+}
 
 export default PopupElement;
