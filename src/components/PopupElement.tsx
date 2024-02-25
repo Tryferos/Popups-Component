@@ -6,7 +6,7 @@ import { PopupItem } from "./PopupItem";
 import { PopupElementProps } from ".";
 
 
-export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
+const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
     ((props, ref) => {
         const { popup, changePopup, title, closePopup, data } = usePopup();
         const { animations } = props.animations ? props : { animations: { enabled: true, duration: 0.2 } };
@@ -14,8 +14,19 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
         const animate = animations?.enabled as boolean;
         const closeOnClickOutside = props.closeOnClickOutside ?? true;
 
+        useEffect(() => {
+            if (popup == null) {
+                closePopup();
+                return;
+            }
+            if (!props.popups.some(item => (item.toLowerCase() == popup.toLowerCase()))) {
+                closePopup();
+            }
+
+        }, [popup, props.popups])
+
         return (
-            <PopupElementWrapper darkMode={darkMode} closeOnClickOutside={closeOnClickOutside} popups={props.popups}>
+            <PopupElementWrapper darkMode={darkMode} closeOnClickOutside={closeOnClickOutside} handleClose={closePopup} itemIsOpen={popup != null}>
                 <AnimatePresence>
                     {
                         popup ? (
@@ -46,20 +57,10 @@ export const PopupElement = forwardRef<HTMLDivElement, PopupElementProps>
         )
     });
 
-export const PopupElementWrapper: FC<Pick<PopupElementProps, 'darkMode' | 'closeOnClickOutside' | 'popups'> & { children: ReactNode }> = (props) => {
-    const { popup, closePopup } = usePopup();
+export const PopupElementWrapper: FC<Pick<PopupElementProps, 'darkMode' | 'closeOnClickOutside'> &
+{ children: ReactNode; handleClose: () => void; itemIsOpen: boolean }> = (props) => {
     const ref = useRef<HTMLDivElement>(null);
-    const { darkMode, closeOnClickOutside } = props;
-    useEffect(() => {
-        if (popup == null) {
-            closePopup();
-            return;
-        }
-        if (!props.popups.some(item => (item.toLowerCase() == popup.toLowerCase()))) {
-            closePopup();
-        }
-
-    }, [popup, props.popups])
+    const { darkMode, closeOnClickOutside, handleClose, itemIsOpen } = props;
     useEffect(() => {
 
         if (!ref || !ref.current) return;
@@ -76,13 +77,13 @@ export const PopupElementWrapper: FC<Pick<PopupElementProps, 'darkMode' | 'close
         if (!closeOnClickOutside) return;
         const target = ev.target as HTMLDivElement;
         if (target === ref.current) {
-            closePopup();
+            handleClose();
         }
     }
     return (
         <div ref={ref}
             onClick={handleClick}
-            className={`absolute top-0 left-0 w-[100vw] h-[100vh] ${popup == null ? 'pointer-events-none bg-none' : 'bg-opacity-20 bg-slate-900 dark:bg-slate-100'} z-[9999] flex justify-center`}>
+            className={`absolute top-0 left-0 w-[100vw] h-[100vh] ${!itemIsOpen ? 'pointer-events-none bg-none' : 'bg-opacity-20 bg-slate-900 dark:bg-slate-100'} z-[9999] flex justify-center`}>
             {props.children}
         </div>
     )

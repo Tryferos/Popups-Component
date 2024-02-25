@@ -3,6 +3,7 @@ import { PopupItem } from './PopupItem';
 import { PopupWrapper, usePopup } from './PopupWrapper';
 import PopupElement from './PopupElement';
 import { ReactNode } from 'react';
+import PopupToastElement from './PopupToastElement';
 
 type Animations = {
     enabled?: boolean;
@@ -21,4 +22,10 @@ export type PopupElementProps = {
     height?: Partial<{ [key in 'maxHeight']: string }>
 }
 
-export { PopupItem, PopupWrapper, usePopup, PopupElement };
+export type ToastElementProps = Omit<PopupElementProps, 'popups'> &
+{
+    toasts: Array<string>;
+    position?: 'top-center' | 'bottom-center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+};
+
+export { PopupItem, PopupWrapper, usePopup, PopupElement, PopupToastElement };
