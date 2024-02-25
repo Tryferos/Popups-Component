@@ -1,6 +1,6 @@
 {
   "name": "@tryferos/popups",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Provides you with popup components to use in your React app.",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
