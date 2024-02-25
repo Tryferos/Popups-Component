@@ -1,6 +1,7 @@
 import '../tailwind.css'
 import { PopupItem } from './PopupItem';
-import { PopupWrapper, usePopup } from './PopupWrapper';
+import { ToastItem } from './PopupItem';
+import { PopupWrapper, usePopup, useToast } from './PopupWrapper';
 import PopupElement from './PopupElement';
 import { ReactNode } from 'react';
 import PopupToastElement from './PopupToastElement';
@@ -28,4 +29,4 @@ export type ToastElementProps = Omit<PopupElementProps, 'popups'> &
     position?: 'top-center' | 'bottom-center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 };
 
-export { PopupItem, PopupWrapper, usePopup, PopupElement, PopupToastElement };
+export { PopupItem, PopupWrapper, usePopup, PopupElement, PopupToastElement, ToastItem, useToast };
